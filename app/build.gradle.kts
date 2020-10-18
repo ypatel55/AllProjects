@@ -102,7 +102,7 @@ gradlegrader {
         txtFile = rootProject.file("ID.txt")
         validate = Spec {
             try {
-                UUID.fromString(it)
+                UUID.fromString(it.trim())
                 true
             } catch (e: java.lang.IllegalArgumentException) {
                 false
