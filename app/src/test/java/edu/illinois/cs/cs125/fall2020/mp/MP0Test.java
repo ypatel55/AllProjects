@@ -73,6 +73,7 @@ public final class MP0Test {
 
   public static class UnitTests {
     Summary BADM100 = new Summary("2020", "Fall", "BADM", "100", "Introduction to Badminton");
+    Summary BADM200 = new Summary("2020", "Fall", "BADM", "200", "Intermediate Badminton");
     Summary CS125 = new Summary("2020", "Fall", "CS", "125", "Introduction to Computer Science");
     Summary CS125Spring =
         new Summary("2021", "Spring", "CS", "125", "Introduction to Computer Science");
@@ -92,6 +93,9 @@ public final class MP0Test {
       // Various comparisons
       assertThat(Summary.COMPARATOR.compare(CS125, BADM100)).isGreaterThan(0);
       assertThat(Summary.COMPARATOR.compare(BADM100, CS125)).isLessThan(0);
+
+      assertThat(Summary.COMPARATOR.compare(CS125, BADM200)).isGreaterThan(0);
+      assertThat(Summary.COMPARATOR.compare(BADM200, CS125)).isLessThan(0);
 
       assertThat(Summary.COMPARATOR.compare(CS225, CS125)).isGreaterThan(0);
       assertThat(Summary.COMPARATOR.compare(CS125, CS225)).isLessThan(0);
