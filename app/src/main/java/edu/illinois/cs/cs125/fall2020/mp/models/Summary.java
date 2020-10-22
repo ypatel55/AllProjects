@@ -158,12 +158,11 @@ public class Summary implements SortedListAdapter.ViewModel {
       return 0;
     }
   };
-          //Integer.compare(courseModel1.number.compareTo(courseModel2.number), 0);
+
   /**
-   *
-   * @param courses
-   * @param text
-   * @return
+   * @param courses list of courses filtered
+   * @param text    the text that should be in course name
+   * @return        the courses filtered
    */
   public static List<Summary> filter(
           @NonNull final List<Summary> courses, @NonNull final String text) {
