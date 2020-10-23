@@ -3,7 +3,7 @@ package edu.illinois.cs.cs125.fall2020.mp.models;
 import androidx.annotation.NonNull;
 
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
-//import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -167,13 +167,14 @@ public class Summary implements SortedListAdapter.ViewModel {
    */
   public static List<Summary> filter(
           @NonNull final List<Summary> courses, @NonNull final String text) {
-    //List<Summary> finalCourses = new ArrayList<Summary>();
-    //for (Summary course : courses) {
-      //if ((course.equals(text)) || (course.title.contains(text)) ||
-    // (course.department.contains(text)) || (course.number.contains(text))) {
-        //finalCourses.add(course);
-      //}
-    //}
-    return courses;
+    List<Summary> finalCourses = new ArrayList<Summary>();
+    for (Summary course : courses) {
+      if ((course.equals(text)) || (course.title.toLowerCase().contains(text.toLowerCase())) || (
+              course.department.toLowerCase().contains(text.toLowerCase())) || (
+                      course.number.toLowerCase().contains(text.toLowerCase()))) {
+        finalCourses.add(course);
+      }
+    }
+    return finalCourses;
   }
 }
