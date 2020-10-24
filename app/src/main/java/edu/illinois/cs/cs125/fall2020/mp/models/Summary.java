@@ -169,9 +169,11 @@ public class Summary implements SortedListAdapter.ViewModel {
           @NonNull final List<Summary> courses, @NonNull final String text) {
     List<Summary> finalCourses = new ArrayList<Summary>();
     for (Summary course : courses) {
-      if ((course.equals(text)) || (course.title.toLowerCase().contains(text.toLowerCase())) || (
-              course.department.toLowerCase().contains(text.toLowerCase())) || (
-                      course.number.toLowerCase().contains(text.toLowerCase()))) {
+      String fullName = course.department + ' ' + course.number + ':' + ' ' + course.title;
+      if ((course.equals(text)) || (course.title.trim().contains(text.toLowerCase().trim())) || (
+              course.department.toLowerCase().trim().contains(text.toLowerCase().trim())) || (
+                      course.number.toLowerCase().trim().contains(text.toLowerCase().trim())) || (
+                              fullName.toLowerCase().contains(text.toLowerCase()))) {
         finalCourses.add(course);
       }
     }
