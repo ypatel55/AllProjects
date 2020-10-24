@@ -1,7 +1,13 @@
 package edu.illinois.cs.cs125.fall2020.mp.activities;
 
 import android.os.Bundle;
+//import android.util.Log;
+import android.text.TextUtils;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +18,9 @@ import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
 import edu.illinois.cs.cs125.fall2020.mp.databinding.ActivityMainBinding;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import edu.illinois.cs.cs125.fall2020.mp.network.Client;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +45,7 @@ public final class MainActivity extends AppCompatActivity
   // List of courses retrieved from the backend server
   @SuppressWarnings("FieldCanBeLocal")
   private List<Summary> courses;
+  private ListView lv;
 
   /**
    * Called when this activity is created.
@@ -125,6 +135,14 @@ public final class MainActivity extends AppCompatActivity
    */
   @Override
   public boolean onQueryTextChange(final String query) {
+    if (query != null && query.length() != 0) {
+      listAdapter.edit().removeAll().commit();
+      for (Summary course : courses) {
+        listAdapter.edit().add(Summary.filter(courses, query)).commit();
+      }
+    } else {
+      listAdapter.edit().add(courses).commit();
+    }
     return true;
   }
 
