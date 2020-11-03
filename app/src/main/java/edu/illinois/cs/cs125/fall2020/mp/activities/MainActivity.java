@@ -59,10 +59,6 @@ public final class MainActivity extends AppCompatActivity
   protected void onCreate(final Bundle unused) {
     super.onCreate(unused);
 
-    // Retrieve the API client from the application and initiate a course summary request
-    CourseableApplication application = (CourseableApplication) getApplication();
-    application.getCourseClient().getSummary(DEFAULT_YEAR, DEFAULT_SEMESTER, this);
-
     // Bind to the layout in activity_main.xml
     binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
@@ -71,6 +67,10 @@ public final class MainActivity extends AppCompatActivity
     listAdapter.addCallback(this);
     binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
     binding.recyclerView.setAdapter(listAdapter);
+
+    // Retrieve the API client from the application and initiate a course summary request
+    CourseableApplication application = (CourseableApplication) getApplication();
+    application.getCourseClient().getSummary(DEFAULT_YEAR, DEFAULT_SEMESTER, this);
 
     // Register this component as a callback for changes to the search view component shown above
     // the course list
