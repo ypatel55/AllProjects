@@ -20,9 +20,9 @@ public class Course extends Summary {
     description = setDescription;
   }
   /**
-   * Get the description for this Summary.
+   * Get the description for this Course.
    *
-   * @return the description for this Summary
+   * @return the description for this Course
    */
   public final String getDescription() {
     return description;

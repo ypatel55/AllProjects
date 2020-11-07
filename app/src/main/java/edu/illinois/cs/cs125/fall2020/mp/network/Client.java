@@ -91,7 +91,8 @@ public final class Client {
       @NonNull final Summary summary,
       @NonNull final CourseClientCallbacks callbacks
   ) {
-    String url = CourseableApplication.SERVER_URL + "course/" + summary.getYear() + "/" + summary.getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber();
+    String url = CourseableApplication.SERVER_URL + "course/" + summary.getYear() + "/" + summary.
+            getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber();
     StringRequest summaryRequest =
             new StringRequest(
                     Request.Method.GET,
