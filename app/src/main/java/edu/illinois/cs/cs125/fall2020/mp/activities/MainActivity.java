@@ -2,18 +2,11 @@ package edu.illinois.cs.cs125.fall2020.mp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-//import android.util.Log;
-//import android.text.TextUtils;
-//import android.widget.ArrayAdapter;
-//import android.util.Log;
 import android.widget.ListView;
 import android.widget.SearchView;
-//import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
@@ -21,13 +14,8 @@ import edu.illinois.cs.cs125.fall2020.mp.R;
 import edu.illinois.cs.cs125.fall2020.mp.adapters.CourseListAdapter;
 import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
 import edu.illinois.cs.cs125.fall2020.mp.databinding.ActivityMainBinding;
-//import edu.illinois.cs.cs125.fall2020.mp.models.Course;
-//import edu.illinois.cs.cs125.fall2020.mp.models.Course;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import edu.illinois.cs.cs125.fall2020.mp.network.Client;
-
-//import java.lang.reflect.Array;
-//import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -171,19 +159,7 @@ public final class MainActivity extends AppCompatActivity
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
-//    try {
-//      courseObj = mapper.readValue(json, String.class);
-//    } catch (JsonProcessingException e) {
-//      e.printStackTrace();
-//    }
-
     startCourseActivity.putExtra("COURSE", json);
-
-//    startCourseActivity.putExtra("DEPARTMENT", course.getDepartment());
-//    startCourseActivity.putExtra("NUMBER", course.getNumber());
-//    startCourseActivity.putExtra("TITLE", course.getTitle());
-//    startCourseActivity.putExtra("YEAR", course.getYear());
-//    startCourseActivity.putExtra("SEMESTER", course.getSemester());
     startActivity(startCourseActivity);
   }
 }
