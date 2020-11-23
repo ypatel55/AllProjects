@@ -15,13 +15,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
 
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-import okhttp3.mockwebserver.internal.duplex.DuplexResponseBody;
 
 /**
  * Development course API server.
@@ -73,18 +71,25 @@ public final class Server extends Dispatcher {
     if (request.getMethod().trim().equals("GET")) {
       String path = request.getPath();
       String[] parts = path.split("/");
-      if (parts.length != 6) {
+      final int five = 5;
+      final int four = 4;
+      final int six = 6;
+      final int uuidLength = 36;
+      if (parts.length != six) {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
       }
-      Summary newSummary = new Summary(parts[2], parts[3], parts[4], parts[5].substring(0, 3), "");
+      if (!(parts[1].equals("rating"))) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+      }
+      Summary newSummary = new Summary(parts[2], parts[3], parts[four], parts[five].substring(0, 3), "");
       if ((courses.containsKey(newSummary) == false)) {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
       }
-      if (!(parts[5].contains("client"))) {
+      if (!(parts[five].contains("client"))) {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
       }
-      String uuid = parts[5].substring((parts[5].lastIndexOf("=") + 1)).trim();
-      if (uuid.length() != 36) {
+      String uuid = parts[five].substring((parts[five].lastIndexOf("=") + 1)).trim();
+      if (uuid.length() != uuidLength) {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
       }
       innerMap.put(uuid, new Rating(uuid, Rating.NOT_RATED));
@@ -102,6 +107,16 @@ public final class Server extends Dispatcher {
         e.printStackTrace();
       }
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(r);
+    }
+    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+  }
+
+  private MockResponse postRating(@NonNull final RecordedRequest request) {
+    if (request.getMethod().trim().equals("POST")) {
+      String r = request.getBody().readUtf8();
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_MOVED_TEMP).setHeader(
+              "Location", "/rating/"
+      );
     }
     return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
   }
@@ -143,8 +158,6 @@ public final class Server extends Dispatcher {
         return testPost(request);
       } else if (path.startsWith("/rating/")) {
         return getRating(request);
-      } else if (path.startsWith("/ratings/")) {
-        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
       }
 
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);

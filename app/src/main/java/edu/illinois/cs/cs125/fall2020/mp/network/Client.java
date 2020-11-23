@@ -61,7 +61,10 @@ public final class Client {
      * @param rating the rating that was retrieved
      */
     default void yourRating(Summary summary, Rating rating) {}
-
+    /**
+     *
+     * @param theString the test string that was retrieved
+     */
     default void testPost(String theString) { }
   }
 
@@ -92,7 +95,12 @@ public final class Client {
             error -> Log.e(TAG, error.toString()));
     requestQueue.add(summaryRequest);
   }
-
+  /**
+   * Testing functions.
+   *
+   * @param theString test string
+   * @param callbacks the callback that will receive the result
+   */
   public void setString(
           @NonNull final String theString,
           @NonNull final CourseClientCallbacks callbacks) {
@@ -110,7 +118,11 @@ public final class Client {
         };
     requestQueue.add(summaryRequest);
   }
-
+  /**
+   * Testing functions.
+   *
+   * @param callbacks the callback that will receive the result
+   */
   public void getString(
           @NonNull final CourseClientCallbacks callbacks) {
     String url = CourseableApplication.SERVER_URL + "test/";
@@ -150,30 +162,43 @@ public final class Client {
     requestQueue.add(summaryRequest);
   }
 
+  /**
+   * Testing functions.
+   *
+   * @param summary   rating this summary
+   * @param clientID  id string of rating
+   * @param callbacks the callback that will receive the result
+   */
   public void getRating(
           @NonNull final Summary summary,
           @NonNull final String clientID,
           @NonNull final CourseClientCallbacks callbacks
   ) {
-    throw new IllegalStateException("Not yet implemented");
-//    String url = CourseableApplication.SERVER_URL + "rating/" + summary.getYear() + "/" + summary.
-//            getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber() + "?client=" + clientID;
-//    StringRequest summaryRequest =
-//            new StringRequest(
-//                    Request.Method.GET,
-//                    url,
-//                    response -> {
-//                      try {
-//                        Rating rating = objectMapper.readValue(clientID, Rating.class);
-//                        callbacks.yourRating(summary, rating);
-//                      } catch (JsonProcessingException e) {
-//                        e.printStackTrace();
-//                      }
-//                    },
-//                    error -> Log.e(TAG, error.toString()));
-//    requestQueue.add(summaryRequest);
+    //throw new IllegalStateException("Not yet implemented");
+    String url = CourseableApplication.SERVER_URL + "rating/" + summary.getYear() + "/" + summary.
+            getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber() + "?client=" + clientID;
+    StringRequest summaryRequest =
+            new StringRequest(
+                    Request.Method.GET,
+                    url,
+                    response -> {
+                      try {
+                        Rating rating = objectMapper.readValue(response, Rating.class);
+                        callbacks.yourRating(summary, rating);
+                      } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                      }
+                    },
+                    error -> Log.e(TAG, error.toString()));
+    requestQueue.add(summaryRequest);
   }
-
+  /**
+   * Testing functions.
+   *
+   * @param summary   rating this summary
+   * @param rating    Rating object
+   * @param callbacks the callback that will receive the result
+   */
   public void postRating(
           @NonNull final Summary summary,
           @NonNull final Rating rating,
