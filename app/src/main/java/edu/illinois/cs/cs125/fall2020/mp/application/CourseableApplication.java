@@ -3,6 +3,8 @@ package edu.illinois.cs.cs125.fall2020.mp.application;
 import android.app.Application;
 //import android.util.Log;
 
+import java.util.UUID;
+
 import edu.illinois.cs.cs125.fall2020.mp.network.Client;
 import edu.illinois.cs.cs125.fall2020.mp.network.Server;
 
@@ -22,6 +24,16 @@ public class CourseableApplication extends Application {
   // Course API client created during application startup
   private Client client;
 
+  private String clientID = UUID.randomUUID().toString();
+
+  /**
+   * Retrieve the clientID instance for this app.
+   *
+   * @return client ID instance.
+   */
+  public final String getClientID() {
+    return clientID;
+  }
   @Override
   public final void onCreate() {
     super.onCreate();

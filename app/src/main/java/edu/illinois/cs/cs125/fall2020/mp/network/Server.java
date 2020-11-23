@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
+import edu.illinois.cs.cs125.fall2020.mp.models.Rating;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -14,10 +15,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
+
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import okhttp3.mockwebserver.internal.duplex.DuplexResponseBody;
 
 /**
  * Development course API server.
@@ -48,6 +52,61 @@ public final class Server extends Dispatcher {
     }
     return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(summary);
   }
+
+  private String theString = "";
+  private MockResponse testPost(@NonNull final RecordedRequest request) {
+    if (request.getMethod().equals("GET")) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(theString);
+    } else if (request.getMethod().equals("POST")) {
+      theString = request.getBody().readUtf8();
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_MOVED_TEMP).setHeader(
+              "Location", "/test/"
+      );
+    }
+    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+  }
+
+
+  private final Map<Summary, Map<String, Rating>> ratings = new HashMap<>();
+  private final Map<String, Rating> innerMap = new HashMap<>();
+  private MockResponse getRating(@NonNull final RecordedRequest request) {
+    if (request.getMethod().trim().equals("GET")) {
+      String path = request.getPath();
+      String[] parts = path.split("/");
+      if (parts.length != 6) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+      }
+      Summary newSummary = new Summary(parts[2], parts[3], parts[4], parts[5].substring(0, 3), "");
+      if ((courses.containsKey(newSummary) == false)) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+      }
+      if (!(parts[5].contains("client"))) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+      }
+      String uuid = parts[5].substring((parts[5].lastIndexOf("=") + 1)).trim();
+      if (uuid.length() != 36) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+      }
+      innerMap.put(uuid, new Rating(uuid, Rating.NOT_RATED));
+      ratings.put(newSummary, innerMap);
+      Rating rating = ratings.get(newSummary).get(uuid);
+      if (rating.getId() == null) {
+        rating = new Rating(uuid, Rating.NOT_RATED);
+      }
+      String r = new String();
+      ObjectMapper m = new ObjectMapper();
+      m.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      try {
+        r = m.writeValueAsString(rating);
+      } catch (JsonProcessingException e) {
+        e.printStackTrace();
+      }
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(r);
+    }
+    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+  }
+
+
 
   @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
   private final Map<Summary, String> courses = new HashMap<>();
@@ -80,6 +139,12 @@ public final class Server extends Dispatcher {
         return getSummary(path.replaceFirst("/summary/", ""));
       } else if (path.startsWith("/course/")) {
         return getCourse(path.replaceFirst("/course/", ""));
+      } else if (path.equals("/test/")) {
+        return testPost(request);
+      } else if (path.startsWith("/rating/")) {
+        return getRating(request);
+      } else if (path.startsWith("/ratings/")) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
       }
 
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);

@@ -25,10 +25,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import edu.illinois.cs.cs125.fall2020.mp.activities.MainActivity;
 import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
+import edu.illinois.cs.cs125.fall2020.mp.network.Client;
 import edu.illinois.cs.cs125.gradlegrader.annotations.Graded;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -128,6 +132,28 @@ public final class MP0Test {
   @RunWith(AndroidJUnit4.class)
   @LooperMode(LooperMode.Mode.PAUSED)
   public static class IntegrationTests {
+    @Test
+    public void testPost() throws ExecutionException, InterruptedException {
+      Client client = Client.start();
+      CompletableFuture<String> firstString = new CompletableFuture<>();
+      client.setString("test", new Client.CourseClientCallbacks() {
+        @Override
+        public void testPost(String theString) {
+          firstString.complete(theString);
+        }
+      });
+      assertThat(firstString.get()).isEqualTo("test");
+
+      CompletableFuture<String> secondString = new CompletableFuture<>();
+      client.getString(new Client.CourseClientCallbacks() {
+        @Override
+        public void testPost(String theString) {
+          secondString.complete(theString);
+        }
+      });
+      assertThat(secondString.get()).isEqualTo("test");
+    }
+
     /** Test summary view to make sure that the correct courses are displayed in the right order. */
     @Test(timeout = 10000L)
     @Graded(points = 20)

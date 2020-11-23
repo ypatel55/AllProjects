@@ -2,6 +2,7 @@ package edu.illinois.cs.cs125.fall2020.mp.network;
 
 import android.util.Log;
 import androidx.annotation.NonNull;
+import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.ExecutorDelivery;
 import com.android.volley.Network;
@@ -60,6 +61,8 @@ public final class Client {
      * @param rating the rating that was retrieved
      */
     default void yourRating(Summary summary, Rating rating) {}
+
+    default void testPost(String theString) { }
   }
 
   /**
@@ -87,6 +90,36 @@ public final class Client {
               }
             },
             error -> Log.e(TAG, error.toString()));
+    requestQueue.add(summaryRequest);
+  }
+
+  public void setString(
+          @NonNull final String theString,
+          @NonNull final CourseClientCallbacks callbacks) {
+    String url = CourseableApplication.SERVER_URL + "test/";
+    StringRequest summaryRequest =
+            new StringRequest(
+                    Request.Method.POST,
+                    url,
+                    response -> callbacks.testPost(response.toString()),
+                    error -> Log.e(TAG, error.toString())) {
+          @Override
+          public byte[] getBody() throws AuthFailureError {
+            return theString.getBytes();
+          }
+        };
+    requestQueue.add(summaryRequest);
+  }
+
+  public void getString(
+          @NonNull final CourseClientCallbacks callbacks) {
+    String url = CourseableApplication.SERVER_URL + "test/";
+    StringRequest summaryRequest =
+            new StringRequest(
+                    Request.Method.GET,
+                    url,
+                    response -> callbacks.testPost(response.toString()),
+                    error -> Log.e(TAG, error.toString()));
     requestQueue.add(summaryRequest);
   }
 
@@ -123,6 +156,22 @@ public final class Client {
           @NonNull final CourseClientCallbacks callbacks
   ) {
     throw new IllegalStateException("Not yet implemented");
+//    String url = CourseableApplication.SERVER_URL + "rating/" + summary.getYear() + "/" + summary.
+//            getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber() + "?client=" + clientID;
+//    StringRequest summaryRequest =
+//            new StringRequest(
+//                    Request.Method.GET,
+//                    url,
+//                    response -> {
+//                      try {
+//                        Rating rating = objectMapper.readValue(clientID, Rating.class);
+//                        callbacks.yourRating(summary, rating);
+//                      } catch (JsonProcessingException e) {
+//                        e.printStackTrace();
+//                      }
+//                    },
+//                    error -> Log.e(TAG, error.toString()));
+//    requestQueue.add(summaryRequest);
   }
 
   public void postRating(
