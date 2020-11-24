@@ -174,7 +174,6 @@ public final class Client {
           @NonNull final String clientID,
           @NonNull final CourseClientCallbacks callbacks
   ) {
-    //throw new IllegalStateException("Not yet implemented");
     String url = CourseableApplication.SERVER_URL + "rating/" + summary.getYear() + "/" + summary.
             getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber() + "?client=" + clientID;
     StringRequest summaryRequest =
