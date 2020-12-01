@@ -213,7 +213,15 @@ public final class Client {
                     error -> Log.e(TAG, error.toString())) {
           @Override
           public byte[] getBody() throws AuthFailureError {
-            return rating.getId().getBytes();
+            String r = "";
+            ObjectMapper m = new ObjectMapper();
+            m.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            try {
+              r = m.writeValueAsString(rating);
+            } catch (JsonProcessingException e) {
+              e.printStackTrace();
+            }
+            return r.getBytes();
           }
     };
     requestQueue.add(summaryRequest);

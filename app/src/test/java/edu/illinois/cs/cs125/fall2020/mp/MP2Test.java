@@ -403,7 +403,7 @@ public final class MP2Test {
         }
 
         /** Test the client getRating method */
-        @Test(timeout = 4000L)
+        @Test(timeout = 8000L)
         @Graded(points = 15)
         public void testClientPostRating()
                 throws JsonProcessingException, InterruptedException, ExecutionException {

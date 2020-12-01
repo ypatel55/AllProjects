@@ -95,9 +95,6 @@ public final class Server extends Dispatcher {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
       }
       String uuid = parts[five].substring((parts[five].lastIndexOf("=") + 1)).trim();
-      if (uuid.length() != uuidLength) {
-        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
-      }
 
 //      Map<String, Rating> inner = ratings.getOrDefault(newSummary, new HashMap<String, Rating>());
 //      if (inner.get(uuid) == null) {
