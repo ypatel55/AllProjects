@@ -203,7 +203,20 @@ public final class Client {
           @NonNull final Rating rating,
           @NonNull final CourseClientCallbacks callbacks
   ) {
-    throw new IllegalStateException("Not yet implemented");
+    String url = CourseableApplication.SERVER_URL + "rating/" + summary.getYear() + "/" + summary.
+            getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber() + "?client=" + rating.getRating();
+    StringRequest summaryRequest =
+            new StringRequest(
+                    Request.Method.POST,
+                    url,
+                    response -> callbacks.yourRating(summary, rating),
+                    error -> Log.e(TAG, error.toString())) {
+          @Override
+          public byte[] getBody() throws AuthFailureError {
+            return rating.getId().getBytes();
+          }
+    };
+    requestQueue.add(summaryRequest);
   }
 
   private static Client instance;
