@@ -204,8 +204,8 @@ public final class Client {
           @NonNull final CourseClientCallbacks callbacks
   ) {
     String url = CourseableApplication.SERVER_URL + "rating/" + summary.getYear() + "/" + summary.
-            getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber() + "?client=" + rating.getRating();
-    StringRequest summaryRequest =
+            getSemester() + "/" + summary.getDepartment() + "/" + summary.getNumber() + "?client=" + rating.getId();
+    StringRequest ratingRequest =
             new StringRequest(
                     Request.Method.POST,
                     url,
@@ -224,7 +224,7 @@ public final class Client {
             return r.getBytes();
           }
     };
-    requestQueue.add(summaryRequest);
+    requestQueue.add(ratingRequest);
   }
 
   private static Client instance;

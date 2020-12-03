@@ -2,12 +2,16 @@ package edu.illinois.cs.cs125.fall2020.mp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.RatingBar;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import edu.illinois.cs.cs125.fall2020.mp.R;
+import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
 import edu.illinois.cs.cs125.fall2020.mp.databinding.ActivityCourseBinding;
 import edu.illinois.cs.cs125.fall2020.mp.models.Course;
+import edu.illinois.cs.cs125.fall2020.mp.models.Rating;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import edu.illinois.cs.cs125.fall2020.mp.network.Client;
 import java.util.concurrent.CompletableFuture;
@@ -33,7 +37,7 @@ public class CourseActivity extends AppCompatActivity implements Client.CourseCl
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    final int headSize = 35;
+    //final int headSize = 35;
     Intent intent = getIntent();
     binding = DataBindingUtil.setContentView(this, R.layout.activity_course);
     String path = intent.getStringExtra("COURSE");
@@ -45,8 +49,10 @@ public class CourseActivity extends AppCompatActivity implements Client.CourseCl
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
+
+    CourseableApplication application = (CourseableApplication) getApplication();
     Client client = Client.start();
-    Course course = new Course();
+    Course courseObj = new Course();
     CompletableFuture<Course> completableFuture = new CompletableFuture<>();
     client.getCourse(newSummary, new Client.CourseClientCallbacks() {
         @Override
@@ -55,15 +61,48 @@ public class CourseActivity extends AppCompatActivity implements Client.CourseCl
         }
     });
     try {
-      course = completableFuture.get();
+      courseObj = completableFuture.get();
     } catch (ExecutionException e) {
       e.printStackTrace();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    binding.textview1.setTextSize(headSize);
+    CompletableFuture<Rating> completableFutureTwo = new CompletableFuture<>();
+    final Summary s = newSummary;
+    binding.rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+      @Override
+      public void onRatingChanged(
+              final RatingBar ratingBar, final float rating, final boolean fromUser) {
+        application.getCourseClient().postRating(s, new Rating(application.getClientID(), (
+                double) rating), new Client.CourseClientCallbacks() {
+                  @Override
+                  public void yourRating(final Summary summary, final Rating rating) {
+                    completableFutureTwo.complete(rating);
+                  }
+                });
+      }
+    });
+    application.getCourseClient().getRating(s, application.getClientID(), new Client.
+            CourseClientCallbacks() {
+      @Override
+      public void yourRating(final Summary summary, final Rating rating) {
+        completableFutureTwo.complete(rating);
+      }
+    });
+    Rating rating1 = new Rating();
+    try {
+      rating1 = completableFutureTwo.get();
+    } catch (ExecutionException e) {
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    String description = courseObj.getDescription();
+    //binding.textview1.setTextSize(headSize);
     binding.textview1.setText(newSummary.getDepartment() + " " + newSummary.getNumber()
             + ":" + " " + newSummary.getTitle() + " ");
-    binding.textview2.setText(course.getDescription());
+    binding.textview2.setText(description);
+    binding.rating.setRating((float) rating1.getRating());
+    System.out.println(rating1.getRating());
   }
 }

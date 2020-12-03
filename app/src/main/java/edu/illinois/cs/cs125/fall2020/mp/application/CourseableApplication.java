@@ -25,20 +25,20 @@ public class CourseableApplication extends Application {
   private Client client;
 
   private String clientID = UUID.randomUUID().toString();
+  @Override
+  public final void onCreate() {
+    super.onCreate();
+    client = Client.start();
+    Server.start();
+  }
 
   /**
    * Retrieve the clientID instance for this app.
    *
    * @return client ID instance.
    */
-  public final String getClientID() {
+  public String getClientID() {
     return clientID;
-  }
-  @Override
-  public final void onCreate() {
-    super.onCreate();
-    client = Client.start();
-    Server.start();
   }
 
   /**

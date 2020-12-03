@@ -120,6 +120,7 @@ public final class MP2Test {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static class UnitTests {
         @BeforeClass
         public static void setup() throws IOException {
@@ -358,6 +359,7 @@ public final class MP2Test {
 
     @SuppressWarnings({
             "SameParameterValue",
+            "ConstantConditions",
             "MismatchedQueryAndUpdateOfCollection"
     })
     @RunWith(AndroidJUnit4.class)
@@ -403,7 +405,7 @@ public final class MP2Test {
         }
 
         /** Test the client getRating method */
-        @Test(timeout = 8000L)
+        @Test(timeout = 4000L)
         @Graded(points = 15)
         public void testClientPostRating()
                 throws JsonProcessingException, InterruptedException, ExecutionException {

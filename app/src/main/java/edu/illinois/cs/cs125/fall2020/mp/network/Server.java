@@ -87,25 +87,18 @@ public final class Server extends Dispatcher {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
       }
 
-      Summary newSummary = new Summary(parts[2], parts[3], parts[four], parts[five].substring(0, 3), "");
-      if ((courses.containsKey(newSummary) == false)) {
-        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
-      }
       if (!(parts[five].contains("client"))) {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
       }
+      Summary newSummary = new Summary(parts[2], parts[3], parts[four], parts[five].substring(0, 3), "");
       String uuid = parts[five].substring((parts[five].lastIndexOf("=") + 1)).trim();
 
-//      Map<String, Rating> inner = ratings.getOrDefault(newSummary, new HashMap<String, Rating>());
-//      if (inner.get(uuid) == null) {
-//        inner.put(uuid, new Rating(uuid, Rating.NOT_RATED));
-//      }
-//      ratings.put(newSummary, inner);
-//
-//      Rating rating = ratings.get(newSummary).get(uuid);
-//      if (rating == null || courses.get(newSummary) == null) {
-//        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
-//      }
+      if (uuid.length() != uuidLength) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+      }
+      if ((courses.containsKey(newSummary) == false)) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+      }
 
       Rating rating = new Rating(uuid, Rating.NOT_RATED);
       if (ratings.containsKey(newSummary) == true) {
@@ -114,7 +107,7 @@ public final class Server extends Dispatcher {
         }
       }
 
-      String r = "";
+      String r = new String();
       ObjectMapper m = new ObjectMapper();
       m.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       try {
@@ -139,8 +132,18 @@ public final class Server extends Dispatcher {
       if (!(parts[1].equals("rating"))) {
         return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
       }
+      if (parts.length != six) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+      }
+      if (!(parts[five].contains("client"))) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+      }
       Summary newSummary = new Summary(parts[2], parts[3], parts[four], parts[five].substring(0, 3), "");
       String uuid = parts[five].substring((parts[five].lastIndexOf("=") + 1)).trim();
+
+      if (uuid.length() != uuidLength) {
+        return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+      }
 
       Rating rating = new Rating();
       ObjectMapper m = new ObjectMapper();
