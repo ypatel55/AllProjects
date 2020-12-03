@@ -73,7 +73,9 @@ public class CourseActivity extends AppCompatActivity implements Client.CourseCl
       @Override
       public void onRatingChanged(
               final RatingBar ratingBar, final float rating, final boolean fromUser) {
-        application.getCourseClient().postRating(s, new Rating(application.getClientID(), (
+        application.
+                getCourseClient().
+                postRating(s, new Rating(application.getClientID(), (
                 double) rating), new Client.CourseClientCallbacks() {
                   @Override
                   public void yourRating(final Summary summary, final Rating rating) {
